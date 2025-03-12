@@ -49,6 +49,25 @@ const COMMAND_MAPPING: Record<string, Record<PackageManager, string>> = {
     yarn: 'remove',
     npm: 'uninstall',
   },
+  run: {
+    pnpm: 'run',
+    bun: 'run',
+    yarn: 'run',
+    npm: 'run',
+  },
+  // Special commands that don't need 'run' in npm
+  start: {
+    pnpm: 'start',
+    bun: 'run start',
+    yarn: 'start',
+    npm: 'start',
+  },
+  test: {
+    pnpm: 'test',
+    bun: 'run test',
+    yarn: 'test',
+    npm: 'test',
+  },
   // Add more command mappings as needed
   exec: {
     pnpm: 'dlx',
@@ -102,6 +121,13 @@ export async function installPackageManager(packageManager: PackageManager): Pro
 export function mapCommand(command: string, packageManager: PackageManager): string {
   if (COMMAND_MAPPING[command] && COMMAND_MAPPING[command][packageManager]) {
     return COMMAND_MAPPING[command][packageManager];
+  }
+  
+  // Special handling for npm scripts that aren't in the mapping
+  // For npm, any command that's not explicitly mapped should be prefixed with 'run'
+  // except for 'start' and 'test' which can be used directly
+  if (packageManager === 'npm' && command !== 'start' && command !== 'test' && !COMMON_COMMANDS.includes(command)) {
+    return `run ${command}`;
   }
   
   // If no mapping exists, use the command as-is
