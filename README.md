@@ -20,6 +20,16 @@ A zero-config CLI tool that detects a project's package manager (pnpm, yarn, npm
 npm install -g pmsswitch
 ```
 
+### From Source
+
+```bash
+git clone https://github.com/PMswitch/PMSwitch.git
+cd PMSwitch
+pnpm install
+pnpm build
+pnpm link --global
+```
+
 ## Usage
 
 Instead of switching between different package managers in different projects, simply use `pms` as a universal command:
