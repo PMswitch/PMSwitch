@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/AnkithVijay/PMSwitch/main/assets/logo.png" alt="PMSwitch Logo" width="500">
+  <img src="./assets/logo.png" alt="PMSwitch Logo" width="500">
 </p>
 
 # PMSwitch 🔄
