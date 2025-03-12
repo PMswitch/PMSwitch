@@ -6,6 +6,8 @@
 
 A zero-config CLI tool that detects a project's package manager (pnpm, yarn, npm, bun) by analyzing lockfiles and proxies commands to the correct package manager. Say goodbye to manually switching between package managers in different projects!
 
+**Website:** [https://pmswitch.org](https://pmswitch.org)
+
 ## Features
 
 - **Automatic Detection**: Detects package managers based on lockfiles (pnpm-lock.yaml, yarn.lock, package-lock.json, bun.lockb)
