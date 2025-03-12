@@ -1,6 +1,6 @@
 # PMSwitch 🔄
 
-A zero-config CLI tool that detects a project's package manager (pnpm, yarn, npm, bun) by analyzing lockfiles and proxies commands to the correct package manager.
+A zero-config CLI tool that detects a project's package manager (pnpm, yarn, npm, bun) by analyzing lockfiles and proxies commands to the correct package manager. Say goodbye to manually switching between package managers in different projects!
 
 ## Features
 
@@ -13,7 +13,7 @@ A zero-config CLI tool that detects a project's package manager (pnpm, yarn, npm
 ## Installation
 
 ```bash
-npm install -g pmswitch
+npm install -g pmsswitch
 ```
 
 ## Usage
@@ -109,7 +109,7 @@ Add a `pmswitchConfig` section to your `package.json`:
 
 ## Supported Commands
 
-Lockpick supports all common package manager commands:
+PMSwitch supports all common package manager commands:
 
 - `install`
 - `add`
@@ -119,6 +119,20 @@ Lockpick supports all common package manager commands:
 - `update`
 - `init`
 - And more!
+
+## Troubleshooting
+
+### Multiple Lockfiles
+
+If multiple lockfiles are detected in a project, PMSwitch will prompt you to choose which package manager to use. You can also force a specific package manager using the `--force-*` flags.
+
+### Missing Package Manager
+
+If the detected package manager is not installed on your system, PMSwitch will notify you and provide instructions for installation.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
