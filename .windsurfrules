@@ -1,10 +1,10 @@
-Project Name: pmsswitch
+Project Name: pmswitch
 Command Name: pms
 Repository: github.com/yourusername/pms
-NPM Package: pmsswitch
+NPM Package: pmswitch
 
 Project Description
-pmsswitch is a zero-config CLI tool that detects a project’s package manager (pnpm, yarn, npm) by analyzing lockfiles. It proxies commands like install, add, or run to the correct package manager, eliminating manual context switching. Supports interactive prompts for ambiguous scenarios.
+pmswitch is a zero-config CLI tool that detects a project’s package manager (pnpm, yarn, npm) by analyzing lockfiles. It proxies commands like install, add, or run to the correct package manager, eliminating manual context switching. Supports interactive prompts for ambiguous scenarios.
 
 Core Objectives
 Automatically detect and use lockfiles (pnpm-lock.yaml, yarn.lock, package-lock.json).
@@ -20,7 +20,7 @@ Copy code
 src/  
 ├── detector.ts           # Lockfile detection logic  
 ├── command-proxy.ts      # Execute pnpm/yarn/npm commands  
-├── config-manager.ts     # Load user defaults (e.g., ~/.lockpickrc)  
+├── config-manager.ts     # Load user defaults (e.g., ~/.pmswitchrc)  
 ├── prompt.ts             # Interactive CLI prompts (multi-lockfile choice)  
 ├── cli.ts                # Argument parsing + workflow orchestration  
 ├── errors.ts             # Custom errors (e.g., NoLockfileError)  
@@ -41,18 +41,18 @@ Phase 2: Multi-Lockfile Handling
 Use enquirer to let users choose when multiple lockfiles exist.
 Add --no-interactive flag for CI/CD compatibility.
  Priority Configuration:
-Allow users to customize detection order in .lockpickrc.
+Allow users to customize detection order in .pmswitchrc.
 Phase 3: Configuration System
  Config File Support:
-Read ~/.lockpickrc (JSON/TOML) for global defaults.
-Support project-specific config in package.json#lockpickConfig.
+Read ~/.pmswitchrc (JSON/TOML) for global defaults.
+Support project-specific config in package.json#pmswitchConfig.
  Fallback Behavior:
 Use user-configured default PM if no lockfile exists.
 Phase 4: Enhanced Commands
  Proxy Additional Commands:
 Support remove, run, exec, update.
  Version Check:
-Add pms --version to show lockpick + detected PM versions.
+Add pms --version to show pmswitch + detected PM versions.
 Phase 5: Testing
  Unit Tests:
 Test lockfile detection logic (single/multiple/none).
@@ -87,7 +87,7 @@ Copy code
 
 3. **Task**: Add `--version` flag.  
    - **File**: `src/cli.ts`  
-   - **Output**: `lockpick v1.0.0 | pnpm v8.15.0`  
+   - **Output**: `pmswitch v1.0.0 | pnpm v8.15.0`  
 
 Risks & Mitigations
 Conflicting Lockfiles:

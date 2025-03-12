@@ -28,7 +28,7 @@ export const COMMON_COMMANDS = [
 ];
 
 /**
- * Maps lockpick commands to package manager specific commands
+ * Maps pmswitch commands to package manager specific commands
  */
 const COMMAND_MAPPING: Record<string, Record<PackageManager, string>> = {
   install: {
@@ -50,6 +50,30 @@ const COMMAND_MAPPING: Record<string, Record<PackageManager, string>> = {
     npm: 'uninstall',
   },
   // Add more command mappings as needed
+  exec: {
+    pnpm: 'dlx',
+    bun: 'x',
+    yarn: 'exec',
+    npm: 'exec',
+  },
+  dlx: {
+    pnpm: 'dlx',
+    bun: 'x',
+    yarn: 'exec',
+    npm: 'exec',
+  },
+  npx: {
+    pnpm: 'dlx',
+    bun: 'x',
+    yarn: 'exec',
+    npm: 'exec',
+  },
+  create: {
+    pnpm: 'create',
+    bun: 'create',
+    yarn: 'create',
+    npm: 'create',
+  }
 };
 
 /**
@@ -70,8 +94,8 @@ export async function installPackageManager(packageManager: PackageManager): Pro
 }
 
 /**
- * Maps a lockpick command to the appropriate package manager command
- * @param command Lockpick command
+ * Maps a pmswitch command to the appropriate package manager command
+ * @param command pmswitch command
  * @param packageManager Package manager to use
  * @returns Mapped command for the package manager
  */
@@ -98,6 +122,29 @@ export async function executeCommand(
   args: string[] = [],
   autoInstall: boolean = false
 ): Promise<void> {
+  // Special handling for npx-style commands in Yarn 1.x
+  if (packageManager === 'yarn' && (command === 'exec' || command === 'dlx' || command === 'npx') && args.length > 0) {
+    const packageToRun = args[0];
+    const packageArgs = args.slice(1);
+    
+    console.log(chalk.blue(`[INFO] Using package manager: ${packageManager}`))
+    console.log(`Executing: yarn add --dev ${packageToRun} && yarn exec ${packageToRun} ${packageArgs.join(' ')}`);
+    
+    try {
+      // First install the package temporarily
+      await execa('yarn', ['add', '--dev', packageToRun], { stdio: 'inherit' });
+      
+      // Then execute it
+      await execa('yarn', ['exec', packageToRun, ...packageArgs], { stdio: 'inherit' });
+      
+      // Finally remove it
+      await execa('yarn', ['remove', packageToRun], { stdio: 'inherit' });
+      
+      return;
+    } catch (error: any) {
+      throw new CommandExecutionError(`Command 'yarn add --dev ${packageToRun} && yarn exec ${packageToRun} ${packageArgs.join(' ')}' failed with exit code ${error.exitCode || 1}: ${error.message}`, error.exitCode || 1, error.message);
+    }
+  }
   // Check if the package manager is installed
   const isInstalled = await isPackageManagerInstalled(packageManager);
   

@@ -19,7 +19,7 @@ A zero-config CLI tool that detects a project's package manager (pnpm, yarn, npm
 ## Installation
 
 ```bash
-npm install -g pmsswitch
+npm install -g pmswitch
 ```
 
 ### From Source
@@ -45,6 +45,9 @@ pms add react
 
 # Run a script
 pms run start
+
+# Execute npx-style commands (works across all package managers)
+pms exec cowsay Hello
 
 # Execute with specific flags
 pms add lodash --dev

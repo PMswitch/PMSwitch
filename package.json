@@ -1,6 +1,6 @@
 {
-  "name": "pmsswitch",
-  "version": "1.0.0",
+  "name": "pmswitch",
+  "version": "1.0.2",
   "description": "Zero-config CLI tool that automatically detects and uses the right package manager based on lockfiles",
   "main": "dist/index.js",
   "bin": {
@@ -22,7 +22,7 @@
     "pnpm",
     "bun"
   ],
-  "author": "",
+  "author": "Vijay Ankith",
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.2",
