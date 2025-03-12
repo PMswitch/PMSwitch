@@ -28,3 +28,8 @@ pnpm-debug.log*
 *.swp
 *.swo
 .DS_Store
+
+# Test directories
+test-npm/
+test-yarn/
+test-pnpm/
