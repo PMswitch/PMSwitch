@@ -206,6 +206,29 @@ export async function executeCommand(
   // Map the command to the appropriate package manager command
   const mappedCommand = mapCommand(command, packageManager);
   
+  // Check if the command is a script command that needs special handling for npm
+  const isNpmScriptCommand = packageManager === 'npm' && 
+                           mappedCommand.startsWith('run ') && 
+                           !COMMON_COMMANDS.includes(command);
+  
+  if (isNpmScriptCommand) {
+    // For npm script commands, we need to split 'run' and the script name
+    const scriptName = mappedCommand.split(' ')[1];
+    console.log(chalk.blue(`Executing: ${packageManager} run ${scriptName} ${args.join(' ')}`));
+    
+    try {
+      // Execute with 'run' and the script name as separate arguments
+      await execa(packageManager, ['run', scriptName, ...args], { stdio: 'inherit' });
+      return;
+    } catch (error: any) {
+      throw new CommandExecutionError(
+        `${packageManager} run ${scriptName} ${args.join(' ')}`,
+        error.exitCode || 1,
+        error.stderr || ''
+      );
+    }
+  }
+  
   console.log(chalk.blue(`Executing: ${packageManager} ${mappedCommand} ${args.join(' ')}`));
   
   try {
