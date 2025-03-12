@@ -124,25 +124,27 @@ export async function executeCommand(
 ): Promise<void> {
   // Special handling for npx-style commands in Yarn 1.x
   if (packageManager === 'yarn' && (command === 'exec' || command === 'dlx' || command === 'npx') && args.length > 0) {
-    const packageToRun = args[0];
+    // Extract package name and version
+    const packageWithVersion = args[0];
+    const packageName = packageWithVersion.split('@')[0];
     const packageArgs = args.slice(1);
     
     console.log(chalk.blue(`[INFO] Using package manager: ${packageManager}`))
-    console.log(`Executing: yarn add --dev ${packageToRun} && yarn exec ${packageToRun} ${packageArgs.join(' ')}`);
+    console.log(`Executing: yarn add --dev ${packageWithVersion} && yarn exec ${packageName} ${packageArgs.join(' ')}`);
     
     try {
       // First install the package temporarily
-      await execa('yarn', ['add', '--dev', packageToRun], { stdio: 'inherit' });
+      await execa('yarn', ['add', '--dev', packageWithVersion], { stdio: 'inherit' });
       
-      // Then execute it
-      await execa('yarn', ['exec', packageToRun, ...packageArgs], { stdio: 'inherit' });
+      // Then execute it - use only the package name without version for exec
+      await execa('yarn', ['exec', packageName, ...packageArgs], { stdio: 'inherit' });
       
       // Finally remove it
-      await execa('yarn', ['remove', packageToRun], { stdio: 'inherit' });
+      await execa('yarn', ['remove', packageName], { stdio: 'inherit' });
       
       return;
     } catch (error: any) {
-      throw new CommandExecutionError(`Command 'yarn add --dev ${packageToRun} && yarn exec ${packageToRun} ${packageArgs.join(' ')}' failed with exit code ${error.exitCode || 1}: ${error.message}`, error.exitCode || 1, error.message);
+      throw new CommandExecutionError(`Command 'yarn add --dev ${packageWithVersion} && yarn exec ${packageName} ${packageArgs.join(' ')}' failed with exit code ${error.exitCode || 1}: ${error.message}`, error.exitCode || 1, error.message);
     }
   }
   // Check if the package manager is installed
