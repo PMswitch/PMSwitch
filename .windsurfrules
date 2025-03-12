@@ -1,0 +1,107 @@
+Project Name: pmsswitch
+Command Name: pms
+Repository: github.com/yourusername/pms
+NPM Package: pmsswitch
+
+Project Description
+pmsswitch is a zero-config CLI tool that detects a project’s package manager (pnpm, yarn, npm) by analyzing lockfiles. It proxies commands like install, add, or run to the correct package manager, eliminating manual context switching. Supports interactive prompts for ambiguous scenarios.
+
+Core Objectives
+Automatically detect and use lockfiles (pnpm-lock.yaml, yarn.lock, package-lock.json).
+Proxy commands to the correct package manager.
+Handle edge cases (multiple lockfiles, missing package managers).
+Provide configuration options for defaults and overrides.
+Technical Architecture
+bash
+
+
+Copy code
+
+src/  
+├── detector.ts           # Lockfile detection logic  
+├── command-proxy.ts      # Execute pnpm/yarn/npm commands  
+├── config-manager.ts     # Load user defaults (e.g., ~/.lockpickrc)  
+├── prompt.ts             # Interactive CLI prompts (multi-lockfile choice)  
+├── cli.ts                # Argument parsing + workflow orchestration  
+├── errors.ts             # Custom errors (e.g., NoLockfileError)  
+└── utils/                # Helper functions (file I/O, logging)  
+Development Phases & Tasks
+Phase 1: MVP Core Functionality
+ Lockfile Detection:
+Detect single lockfile with priority: pnpm > bun > yarn > npm.
+if no lockfile/default configured give option to user to select pnpm, bun , yarn or npm
+if no pnpm yarn or bun not installed then install it and then run the command
+
+Basic Command Proxying:
+Map pms install → [detected-pm] install.
+Forward arguments (e.g., pms add react --dev).
+
+Phase 2: Multi-Lockfile Handling
+ Interactive Prompt:
+Use enquirer to let users choose when multiple lockfiles exist.
+Add --no-interactive flag for CI/CD compatibility.
+ Priority Configuration:
+Allow users to customize detection order in .lockpickrc.
+Phase 3: Configuration System
+ Config File Support:
+Read ~/.lockpickrc (JSON/TOML) for global defaults.
+Support project-specific config in package.json#lockpickConfig.
+ Fallback Behavior:
+Use user-configured default PM if no lockfile exists.
+Phase 4: Enhanced Commands
+ Proxy Additional Commands:
+Support remove, run, exec, update.
+ Version Check:
+Add pms --version to show lockpick + detected PM versions.
+Phase 5: Testing
+ Unit Tests:
+Test lockfile detection logic (single/multiple/none).
+Verify command forwarding with mocked child_process.
+ E2E Tests:
+Test pms install in temp directories with mocked lockfiles.
+Phase 6: Polish & Deployment
+ CLI Help Menu:
+Add pms --help with usage examples.
+
+ Publish to NPM:
+Create build script (dist/ output) and publish.
+Key Dependencies
+enquirer: For interactive prompts.
+execa: Run package manager commands.
+chalk: Colorized CLI output.
+jest: Testing framework.
+mock-fs: Mock file systems in tests.
+Sample Task Breakdown
+markdown
+
+
+Copy code
+
+1. **Task**: Implement lockfile detection logic.  
+   - **File**: `src/detector.ts`  
+   - **Acceptance Criteria**: Returns "pnpm" if `pnpm-lock.yaml` exists.  
+
+2. **Task**: Create interactive prompt for multi-lockfile scenarios.  
+   - **File**: `src/prompt.ts`  
+   - **Libraries**: Use `enquirer`’s `Select` prompt.  
+
+3. **Task**: Add `--version` flag.  
+   - **File**: `src/cli.ts`  
+   - **Output**: `lockpick v1.0.0 | pnpm v8.15.0`  
+
+Risks & Mitigations
+Conflicting Lockfiles:
+Warn users and provide override flags (--force-pnpm).
+Missing Package Managers:
+Check for global installations and guide users to install.
+Performance Overhead:
+Benchmark against native commands; optimize file detection.
+Stretch Goals
+ Monorepo Support: Detect lockfiles in nested workspaces.
+ Plugin System: Add non-JS package managers (Cargo, Pipenv).
+ Auto-Fix Lockfiles: Clean up outdated/unused lockfiles.
+This outline provides all necessary context for an AI/developer to start coding. Would you like me to:
+
+Draft a package.json with required dependencies?
+Provide starter code for the detector.ts module?
+Create a GitHub Actions CI/CD pipeline template?
