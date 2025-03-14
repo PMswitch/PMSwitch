@@ -78,6 +78,7 @@ pms install --debug
 You can set your preferred default package manager directly from the command line:
 
 ```bash
+pms --default bun  # Set bun as your default package manager
 pms --default pnpm  # Set pnpm as your default package manager
 pms --default yarn  # Set yarn as your default package manager
 pms --default npm   # Set npm as your default package manager

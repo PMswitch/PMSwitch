@@ -9,6 +9,7 @@ import { executeCommand, COMMON_COMMANDS } from './command-proxy';
 import { loadConfig, setDefaultPackageManager } from './config-manager';
 import { promptPackageManager, promptDefaultPackageManager, promptInstallPackageManager, promptSaveAsDefault } from './prompt';
 import { debug, info, warn, error, success, setLogLevel, LogLevel } from './utils/logger';
+import { colorizePackageManager } from './utils/pm-colors';
 import { NoLockfileError, PackageManagerNotInstalledError } from './errors';
 
 // Get package version from package.json
@@ -60,7 +61,7 @@ program
       }
       
       await setDefaultPackageManager(packageManager as PackageManager);
-      success(`Set ${packageManager} as the default package manager`);
+      success(`Set ${colorizePackageManager(packageManager)} as the default package manager`);
       return;
     }
     
@@ -158,7 +159,7 @@ async function runCommand(command: string, args: string[], options: CommandOptio
             const saveAsDefault = await promptSaveAsDefault(packageManager);
             if (saveAsDefault) {
               await setDefaultPackageManager(packageManager);
-              success(`Saved ${packageManager} as default package manager`);
+              success(`Saved ${colorizePackageManager(packageManager)} as default package manager`);
             }
           } else {
             // No default and no interactive, use npm
@@ -192,17 +193,17 @@ async function runCommand(command: string, args: string[], options: CommandOptio
     if (!isInstalled) {
       if (config.autoInstall || (config.interactive && !options.noInteractive && await promptInstallPackageManager(packageManager))) {
         // Install package manager
-        info(`Installing ${packageManager}...`);
+        info(`Installing ${colorizePackageManager(packageManager)}...`);
         // Use npm to install other package managers
         await executeCommand('npm', 'install', ['-g', packageManager]);
-        success(`Successfully installed ${packageManager}`);
+        success(`Successfully installed ${colorizePackageManager(packageManager)}`);
       } else {
         throw new PackageManagerNotInstalledError(packageManager);
       }
     }
     
     // Execute command
-    info(`Using package manager: ${packageManager}`);
+    info(`Using package manager: ${colorizePackageManager(packageManager)}`);
     await executeCommand(packageManager, command, args);
     
   } catch (err: unknown) {

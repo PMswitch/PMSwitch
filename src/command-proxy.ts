@@ -5,6 +5,7 @@ import { PackageManagerNotInstalledError, CommandExecutionError } from './errors
 import { isPackageManagerInstalled } from './detector';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { colorizePackageManager, colorizeCommand } from './utils/pm-colors';
 
 /**
  * Common commands that can be proxied to package managers
@@ -101,12 +102,12 @@ const COMMAND_MAPPING: Record<string, Record<PackageManager, string>> = {
  * @returns Promise that resolves when installation is complete
  */
 export async function installPackageManager(packageManager: PackageManager): Promise<void> {
-  console.log(chalk.yellow(`Installing ${packageManager} globally...`));
+  console.log(chalk.yellow(`Installing ${colorizePackageManager(packageManager)} globally...`));
   
   try {
     // Use npm to install other package managers
     await execa('npm', ['install', '-g', packageManager], { stdio: 'inherit' });
-    console.log(chalk.green(`Successfully installed ${packageManager}`));
+    console.log(chalk.green(`Successfully installed ${colorizePackageManager(packageManager)}`));
   } catch (error: any) {
     throw new Error(`Failed to install ${packageManager}: ${error.message}`);
   }
@@ -155,8 +156,8 @@ export async function executeCommand(
     const packageName = packageWithVersion.split('@')[0];
     const packageArgs = args.slice(1);
     
-    console.log(chalk.blue(`[INFO] Using package manager: ${packageManager}`))
-    console.log(`Executing: yarn add --dev ${packageWithVersion} && yarn exec ${packageName} ${packageArgs.join(' ')}`);
+    console.log(chalk.blue(`[INFO] Using package manager: ${colorizePackageManager(packageManager)}`))
+    console.log(`Executing: ${colorizeCommand('yarn', `add --dev ${packageWithVersion} && yarn exec ${packageName} ${packageArgs.join(' ')}`)}`);
     
     try {
       // First install the package temporarily
@@ -189,7 +190,7 @@ export async function executeCommand(
   // but 'add' is used to add new packages (unlike npm/pnpm where 'install' works for both)
   if (packageManager === 'yarn' && command === 'install' && args.length > 0) {
     // If we're trying to install specific packages with yarn, use 'add' instead
-    console.log(chalk.blue(`Executing: ${packageManager} add ${args.join(' ')}`));
+    console.log(chalk.blue(`Executing: ${colorizeCommand(packageManager, `add ${args.join(' ')}`)}`));
     
     try {
       await execa(packageManager, ['add', ...args], { stdio: 'inherit' });
@@ -214,7 +215,7 @@ export async function executeCommand(
   if (isNpmScriptCommand) {
     // For npm script commands, we need to split 'run' and the script name
     const scriptName = mappedCommand.split(' ')[1];
-    console.log(chalk.blue(`Executing: ${packageManager} run ${scriptName} ${args.join(' ')}`));
+    console.log(chalk.blue(`Executing: ${colorizeCommand(packageManager, `run ${scriptName} ${args.join(' ')}`)}`));
     
     try {
       // Execute with 'run' and the script name as separate arguments
@@ -229,7 +230,7 @@ export async function executeCommand(
     }
   }
   
-  console.log(chalk.blue(`Executing: ${packageManager} ${mappedCommand} ${args.join(' ')}`));
+  console.log(chalk.blue(`Executing: ${colorizeCommand(packageManager, `${mappedCommand} ${args.join(' ')}`)}`));
   
   try {
     // Execute the command and pipe stdout/stderr to the current process

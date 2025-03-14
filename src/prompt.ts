@@ -1,6 +1,7 @@
 import { prompt } from 'enquirer';
 import chalk from 'chalk';
 import { PackageManager } from './types';
+import { colorizePackageManager } from './utils/pm-colors';
 
 /**
  * Prompts the user to choose a package manager when multiple lockfiles are detected
@@ -23,7 +24,7 @@ export async function promptPackageManager(packageManagers: PackageManager[]): P
     choices: packageManagers.map(pm => ({
       name: pm,
       value: pm,
-      message: pm
+      message: colorizePackageManager(pm)
     }))
   });
   
@@ -40,10 +41,10 @@ export async function promptDefaultPackageManager(): Promise<PackageManager> {
     name: 'packageManager',
     message: 'No lockfile detected. Which package manager would you like to use?',
     choices: [
-      { name: 'pnpm', value: 'pnpm', message: 'pnpm' },
-      { name: 'bun', value: 'bun', message: 'bun' },
-      { name: 'yarn', value: 'yarn', message: 'yarn' },
-      { name: 'npm', value: 'npm', message: 'npm' }
+      { name: 'pnpm', value: 'pnpm', message: colorizePackageManager('pnpm') },
+      { name: 'bun', value: 'bun', message: colorizePackageManager('bun') },
+      { name: 'yarn', value: 'yarn', message: colorizePackageManager('yarn') },
+      { name: 'npm', value: 'npm', message: colorizePackageManager('npm') }
     ]
   });
   
@@ -59,7 +60,7 @@ export async function promptInstallPackageManager(packageManager: PackageManager
   const result = await prompt<{ install: boolean }>({
     type: 'confirm',
     name: 'install',
-    message: `${packageManager} is not installed. Would you like to install it globally?`,
+    message: `${colorizePackageManager(packageManager)} is not installed. Would you like to install it globally?`,
     initial: true
   });
   
@@ -75,7 +76,7 @@ export async function promptSaveAsDefault(packageManager: PackageManager): Promi
   const result = await prompt<{ save: boolean }>({
     type: 'confirm',
     name: 'save',
-    message: `Would you like to save ${packageManager} as your default package manager?`,
+    message: `Would you like to save ${colorizePackageManager(packageManager)} as your default package manager?`,
     initial: false
   });
   
