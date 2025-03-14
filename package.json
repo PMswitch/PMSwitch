@@ -24,6 +24,14 @@
   ],
   "author": "Vijay Ankith",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PMswitch/PMSwitch.git"
+  },
+  "homepage": "https://pmswitch.org",
+  "bugs": {
+    "url": "https://github.com/PMswitch/PMSwitch/issues"
+  },
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^9.4.1",
