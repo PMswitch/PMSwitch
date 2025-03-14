@@ -93,6 +93,43 @@ const COMMAND_MAPPING: Record<string, Record<PackageManager, string>> = {
     bun: 'create',
     yarn: 'create',
     npm: 'create',
+  },
+  // Shorthand command mappings
+  i: {
+    pnpm: 'install',
+    bun: 'install',
+    yarn: 'install',
+    npm: 'install',
+  },
+  ci: {
+    pnpm: 'install --frozen-lockfile',
+    bun: 'install --frozen-lockfile',
+    yarn: 'install --frozen-lockfile',
+    npm: 'ci',
+  },
+  a: {
+    pnpm: 'add',
+    bun: 'add',
+    yarn: 'add',
+    npm: 'install',
+  },
+  r: {
+    pnpm: 'remove',
+    bun: 'remove',
+    yarn: 'remove',
+    npm: 'uninstall',
+  },
+  un: {
+    pnpm: 'remove',
+    bun: 'remove',
+    yarn: 'remove',
+    npm: 'uninstall',
+  },
+  up: {
+    pnpm: 'update',
+    bun: 'update',
+    yarn: 'upgrade',
+    npm: 'update',
   }
 };
 
